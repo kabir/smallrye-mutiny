@@ -36,23 +36,6 @@
             <groupId>io.smallrye.reactive</groupId>
             <artifactId>mutiny-test-utils</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>io.smallrye.reactive</groupId>
-            <artifactId>mutiny-context-propagation</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.smallrye</groupId>
-            <artifactId>smallrye-context-propagation</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.smallrye.config</groupId>
-            <artifactId>smallrye-config</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -115,7 +98,62 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>tck-with-cp</id>
+            <activation>
+                <property>
+                    <name>!disable.tck-with-cp</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.smallrye.reactive</groupId>
+                    <artifactId>mutiny-context-propagation</artifactId>
+                    <version>${project.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>io.smallrye</groupId>
+                    <artifactId>smallrye-context-propagation</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>io.smallrye.config</groupId>
+                    <artifactId>smallrye-config</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>tck-with-cp</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <!--
+                                        Add a system property to avoid "Skipping execution of surefire because it has already been run for this configuration"
+                                    -->
+                                    <systemPropertyVariables>
+                                        <noop.dummy>noop</noop.dummy>
+                                    </systemPropertyVariables>
+                                    <includes>
+                                        <include>**/tck/ReactiveStreamsEngineImplTck</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>**/tck/SubscriberWhitebox*</exclude>
+                                    </excludes>
+                                    <junitArtifactName>none:none</junitArtifactName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
-
-
 </project>
