@@ -3,10 +3,12 @@ package io.smallrye.mutiny.infrastructure;
 import static io.smallrye.mutiny.helpers.ParameterValidation.nonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.function.UnaryOperator;
 
@@ -86,9 +88,21 @@ public class Infrastructure {
     }
 
     public static <T> Multi<T> onMultiCreation(Multi<T> instance) {
+        return onMultiCreation(null, instance);
+    }
+
+    public static <T> Multi<T> onMultiCreation(Set<Object> hints, Multi<T> instance) {
+        hints = hints != null ? hints : Collections.emptySet();
+
         Multi<T> current = instance;
         for (MultiInterceptor interceptor : MULTI_INTERCEPTORS) {
+            // Not perfect - can be revisited :)
+            String hintName = "skip." + interceptor.getClass().getName();
+            if (hints.contains(hintName)) {
+                continue;
+            }
             current = interceptor.onMultiCreation(current);
+
         }
         return current;
     }

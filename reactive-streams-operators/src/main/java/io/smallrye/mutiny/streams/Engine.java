@@ -1,5 +1,8 @@
 package io.smallrye.mutiny.streams;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
@@ -25,6 +28,27 @@ import io.smallrye.mutiny.streams.utils.DefaultSubscriberWithCompletionStage;
 import io.smallrye.mutiny.streams.utils.WrappedProcessor;
 
 public class Engine implements ReactiveStreamsEngine {
+
+    /**
+     * @deprecated internal use only
+     */
+    @Deprecated
+    public Engine addHints(Object... hints) {
+        if (hints.length == 0) {
+            return this;
+        }
+        HintsEngine hintsEngine = new HintsEngine();
+        hintsEngine.addHints(hints);
+        return hintsEngine;
+    }
+
+    /**
+     * @deprecated internal use only
+     */
+    @Deprecated
+    public Set<Object> getHints() {
+        return Collections.emptySet();
+    }
 
     @Override
     public <T> Publisher<T> buildPublisher(Graph graph) {
@@ -117,4 +141,22 @@ public class Engine implements ReactiveStreamsEngine {
         return Transformer.apply(ps.get());
     }
 
+    private class HintsEngine extends Engine {
+        private final Set<Object> hints = Collections.synchronizedSet(new HashSet<>());
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public Engine addHints(Object... hints) {
+            for (Object hint : hints) {
+                this.hints.add(hint);
+            }
+            return this;
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public Set<Object> getHints() {
+            return Collections.unmodifiableSet(hints);
+        }
+    }
 }

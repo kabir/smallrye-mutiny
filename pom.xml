@@ -60,6 +60,7 @@
         <module>reactive-streams-operators</module>
         <module>documentation</module>
         <module>context-propagation</module>
+        <module>test</module>
     </modules>
 
     <properties>
@@ -79,6 +80,7 @@
                 <artifactId>mutiny</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.reactivestreams</groupId>
                 <artifactId>reactive-streams</artifactId>

@@ -2,6 +2,7 @@ package io.smallrye.mutiny;
 
 import static io.smallrye.mutiny.helpers.ParameterValidation.nonNull;
 
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -18,6 +19,10 @@ public interface Multi<T> extends Publisher<T> {
 
     static MultiCreate createFrom() {
         return MultiCreate.INSTANCE;
+    }
+
+    static MultiCreate createFrom(Set<Object> hints) {
+        return MultiCreate.createWithHints(hints);
     }
 
     /**

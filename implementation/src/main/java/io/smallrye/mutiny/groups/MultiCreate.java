@@ -3,7 +3,9 @@ package io.smallrye.mutiny.groups;
 import static io.smallrye.mutiny.helpers.ParameterValidation.SUPPLIER_PRODUCED_NULL;
 import static io.smallrye.mutiny.helpers.ParameterValidation.nonNull;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -42,8 +44,19 @@ public class MultiCreate {
 
     public static final MultiCreate INSTANCE = new MultiCreate();
 
+    private final Set<Object> hints;
+
     private MultiCreate() {
         // avoid direct instantiation.
+        this(null);
+    }
+
+    private MultiCreate(Set<Object> hints) {
+        this.hints = hints != null ? Collections.synchronizedSet(hints) : Collections.emptySet();
+    }
+
+    public static MultiCreate createWithHints(Set<Object> hints) {
+        return new MultiCreate(hints);
     }
 
     /**
@@ -284,7 +297,7 @@ public class MultiCreate {
      * @return the new {@link Multi}
      */
     public <T> Multi<T> iterable(Iterable<T> iterable) {
-        return Infrastructure.onMultiCreation(new IterableBasedMulti<>(nonNull(iterable, "iterable")));
+        return Infrastructure.onMultiCreation(hints, new IterableBasedMulti<>(nonNull(iterable, "iterable")));
     }
 
     /**

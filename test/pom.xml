@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.smallrye.reactive</groupId>
+        <artifactId>mutiny-project</artifactId>
+        <version>999-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>smallrye-test</artifactId>
+
+    <name>SmallRye Mutiny - Test Parent</name>
+    <description>Parent for tests that don't naturally belong in any of the implementation modules</description>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>select-context-propagation</module>
+    </modules>
+
+</project>
